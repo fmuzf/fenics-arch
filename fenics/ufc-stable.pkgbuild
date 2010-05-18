@@ -1,0 +1,30 @@
+# Contributor: Myles English <mylesenglish@gmail.com>
+# WORKS
+pkgname=ufc
+pkgver=1.4.0
+pkgrel=1
+pkgdesc="A unified framework for finite element assembly."
+arch=(any)
+url="http://launchpad.net/ufc"
+license=('GPL')
+groups=()
+depends=('python' 'scons' 'boost' 'swig')
+makedepends=()
+optdepends=()
+provides=()
+conflicts=()
+replaces=()
+backup=()
+options=(!emptydirs)
+install=
+source=($url/trunk/$pkgver/+download/$pkgname-$pkgver.tar.gz)
+noextract=()
+md5sums=('48abe4108ce4038c90d129383fd4ebad')
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver"
+  #scons enablePyUFC=No
+  scons install prefix=$pkgdir/usr boostDir=/usr || return 1
+}
+
+# vim:set ts=2 sw=2 et:

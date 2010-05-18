@@ -1,0 +1,13 @@
+post_install() {
+cat << EOF
+
+Be sure to set the appropriate environment variables, e.g. add the line:
+
+  source /etc/dolfin.conf
+
+to your ~/.bashrc file.
+
+EOF
+}
+
+# vim:set ts=2 sw=2 et:

@@ -1,0 +1,27 @@
+# Contributor: Myles English <mylesenglish@gmail.com>
+# WORKS
+pkgname=fiat
+pkgver=0.9.1
+pkgrel=1
+pkgdesc="Supports generation of arbitrary order instances of the Lagrange elements on lines, triangles, and tetrahedra."
+arch=(any)
+url="http://launchpad.net/fiat"
+license=('GPL')
+groups=()
+depends=('python' 'scons')
+makedepends=()
+optdepends=()
+provides=()
+conflicts=()
+replaces=()
+backup=()
+options=(!emptydirs)
+install=
+source=($url/trunk/$pkgver/+download/$pkgname-$pkgver.tar.gz)
+noextract=()
+md5sums=('888daf9ad0337a10ac72302d150d6a26')
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver"
+  python setup.py install --prefix=/usr --root="$pkgdir" || return 1
+}

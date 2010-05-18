@@ -1,0 +1,61 @@
+# Contributor: Myles English <mylesenglish@gmail.com>
+pkgname=dolfin
+pkgver=0.9.7
+pkgrel=1
+pkgdesc="the C++/Python interface of FEniCS, providing a consistent PSE (Problem Solving Environment) for ordinary and partial differential equations."
+arch=(any)
+url="http://launchpad.net/dolfin"
+license=('GPL')
+_patchname="patch.diff"
+
+groups=()
+
+#sudo apt-get install build-essential scons mercurial libxml2-dev libgts-dev pkg-config
+#python-dev python-numpy python-vtk swig libsuitesparse-dev libboost-dev 
+#libboost-serialization-dev, libboost-program-options-dev libboost-filesystem-dev
+
+depends=('python' 'boost' 'libxml2' 'swig')
+# enablePython requires swig
+
+makedepends=('scons')
+optdepends=()
+provides=()
+conflicts=()
+replaces=()
+backup=()
+options=(!emptydirs)
+install=dolfin.install
+source=($url/trunk/$pkgver/+download/$pkgname-$pkgver.tar.gz
+        patch.diff)
+noextract=()
+md5sums=('4fb45e99ee165c150f61ff62a81d0e1b'
+         '8f4247eba947bc90f7f40ad950fe8ba7')
+
+# enableDemos=yes might require FFC, UFL, Instant, FIAT
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver"
+
+  patch -Np1 -i ${startdir}/${_patchname} || return 1
+
+#  scons enableDemos=yes || return 1 
+
+  scons configure prefix="${pkgdir}/usr" || return 1  #withBoostDir=/usr
+  	# withPetscDir=/home/myles/fenics/petsc-3.0.0-p12 enablePetsc=True \
+  	# enableMpi=yes enableDemos=yes enableUmfpack=yes enableDebug=yes \
+  	# enablePython=yes withBoostDir=/usr withUmfpackDir=/usr enableDemos=yes \
+  	# enablePetsc=yes enableUmfpack=yes enableDebug=yes enablePython=yes \
+  	# withTrilinosDir=/home/myles/fenics/trilinos \
+  	# pythonModuleDir=/home/myles/.virtualenvs/fenics/lib/python2.6/site-packages \
+  	# pythonExtDir=/home/myles/.virtualenvs/fenics/lib/python2.6/site-packages \
+  	# withMpiCompiler=/opt/mpich2/bin/mpicxx &&
+
+  mkdir "${pkgdir}/etc" &&
+  cp "$srcdir/$pkgname-$pkgver/dolfin.conf" "${pkgdir}/etc/" &&
+  sed -i "s#${pkgdir}##" "${pkgdir}/etc/dolfin.conf" &&
+
+  scons install || return 1
+
+}
+
+# vim:set ts=2 sw=2 et:
