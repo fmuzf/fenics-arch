@@ -1,0 +1,28 @@
+# Maintainer: Myles English <myles at rockhead dot biz>
+pkgname=petsc
+pkgver=3.0.0_p12
+_config=linux-gnu-cxx-debug
+pkgrel=1
+pkgdesc="Portable, extensible toolkit for scientific computation"
+arch=('i686' 'x86_64')
+url="http://www.mcs.anl.gov/petsc/petsc-as"
+license=('?')
+depends=('gcc' 'mpich2' 'boost' 'umfpack')
+source=(http://ftp.mcs.anl.gov/pub/petsc/software_old/${pkgname}-${pkgver/_p12/}.tar.gz)
+md5sums=('8712c3e49e8d872fdd509ba0187184da')
+
+build() {
+   cd ${srcdir}/${pkgname}-${pkgver/_/-}
+
+   export PETSC_DIR=${srcdir}/${pkgname}-${pkgver/_/-}
+
+   ./config/configure.py --prefix=${pkgdir}/usr/${_config} \
+       --with-mpi-dir=/opt/mpich2 \
+       --with-sieve --with-clanguage=cxx --with-boost-dir=/usr/lib \
+       --with-umfpack=1 --with-umfpack-dir=/usr/lib --with-clanguage=c++ \
+       --with-shared=1 --with-mpi-shared=1 || return 1
+   make || return 1
+   make install PETSC_DIR=${srcdir}/${pkgname}-${pkgver/_/-} || return 1
+   export PETSC_DIR=/usr/${_config}
+   sed -i "s#${pkgdir}##g" "${pkgdir}/usr/${_config}/conf/variables"
+}

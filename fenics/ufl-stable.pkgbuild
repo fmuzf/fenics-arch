@@ -1,4 +1,4 @@
-# Contributor: Myles English <mylesenglish@gmail.com>
+# Maintainer: Myles English <myles at rockhead dot biz>
 # WORKS
 pkgname=ufl
 pkgver=0.5.2
@@ -7,18 +7,9 @@ pkgdesc="Unified form language."
 arch=(any)
 url="http://launchpad.net/ufl"
 license=('GPL')
-groups=()
 depends=('python')
-makedepends=()
-optdepends=()
-provides=()
-conflicts=()
-replaces=()
-backup=()
 options=(!emptydirs)
-install=
 source=($url/trunk/$pkgver/+download/$pkgname-$pkgver.tar.gz)
-noextract=()
 md5sums=('735247217148ed36cd3187485a4aab02')
 
 build() {

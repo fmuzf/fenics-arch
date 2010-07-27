@@ -1,11 +1,11 @@
-# Contributor: Myles English <mylesenglish@gmail.com>
+# Maintainer: Myles English <myles at rockhead dot biz>
 pkgname=ufc
 pkgver=
 pkgrel=1
 pkgdesc="A unified framework for finite element assembly."
 arch=(any)
 url="http://launchpad.net/ufc"
-license=('GPL')
+license=('?')
 groups=()
 depends=('python' 'scons')
 makedepends=()

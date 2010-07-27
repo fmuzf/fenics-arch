@@ -1,4 +1,4 @@
-# Contributor: Myles English <mylesenglish@gmail.com>
+# Maintainer: Myles English <myles at rockhead dot biz>
 pkgname=dolfin
 pkgver=0.9.7
 pkgrel=1
@@ -7,29 +7,16 @@ arch=(any)
 url="http://launchpad.net/dolfin"
 license=('GPL')
 _patchname="patch.diff"
-
-groups=()
-
-#sudo apt-get install build-essential scons mercurial libxml2-dev libgts-dev pkg-config
-#python-dev python-numpy python-vtk swig libsuitesparse-dev libboost-dev 
-#libboost-serialization-dev, libboost-program-options-dev libboost-filesystem-dev
-
-depends=('python' 'boost' 'libxml2' 'swig')
-# enablePython requires swig
-
+depends=('python' 'boost' 'libxml2' 'lapack' 'blas' 'swig')
 makedepends=('scons')
 optdepends=()
-provides=()
-conflicts=()
-replaces=()
-backup=()
 options=(!emptydirs)
 install=dolfin.install
 source=($url/trunk/$pkgver/+download/$pkgname-$pkgver.tar.gz
         patch.diff)
 noextract=()
 md5sums=('4fb45e99ee165c150f61ff62a81d0e1b'
-         '8f4247eba947bc90f7f40ad950fe8ba7')
+         '6b696964d5a15cb870d399f81648ecce')
 
 # enableDemos=yes might require FFC, UFL, Instant, FIAT
 
@@ -38,23 +25,20 @@ build() {
 
   patch -Np1 -i ${startdir}/${_patchname} || return 1
 
-#  scons enableDemos=yes || return 1 
-
-  scons configure prefix="${pkgdir}/usr" || return 1  #withBoostDir=/usr
-  	# withPetscDir=/home/myles/fenics/petsc-3.0.0-p12 enablePetsc=True \
-  	# enableMpi=yes enableDemos=yes enableUmfpack=yes enableDebug=yes \
-  	# enablePython=yes withBoostDir=/usr withUmfpackDir=/usr enableDemos=yes \
-  	# enablePetsc=yes enableUmfpack=yes enableDebug=yes enablePython=yes \
-  	# withTrilinosDir=/home/myles/fenics/trilinos \
-  	# pythonModuleDir=/home/myles/.virtualenvs/fenics/lib/python2.6/site-packages \
-  	# pythonExtDir=/home/myles/.virtualenvs/fenics/lib/python2.6/site-packages \
+  scons configure prefix="${pkgdir}/usr" withBoostDir=/usr enableDemos=yes   \ 
+    	 withPetscDir=/usr/linux-gnu-cxx-debug || return 1 # 
+  	# withUmfpackDir=/usr \
+  	# withTrilinosDir=~/fenics/trilinos \
+  	# pythonModuleDir=~/.virtualenvs/fenics/lib/python2.6/site-packages \
+  	# pythonExtDir=~/.virtualenvs/fenics/lib/python2.6/site-packages \
   	# withMpiCompiler=/opt/mpich2/bin/mpicxx &&
 
-  mkdir "${pkgdir}/etc" &&
-  cp "$srcdir/$pkgname-$pkgver/dolfin.conf" "${pkgdir}/etc/" &&
-  sed -i "s#${pkgdir}##" "${pkgdir}/etc/dolfin.conf" &&
+  mkdir -p "${pkgdir}/etc/dolfin" &&
+  cp "$srcdir/$pkgname-$pkgver/dolfin.conf" "${pkgdir}/etc/dolfin/" &&
+  sed -i "s#${pkgdir}##g" "${pkgdir}/etc/dolfin/dolfin.conf" &&
 
   scons install || return 1
+  sed -i "s#${pkgdir}##g" "${pkgdir}/usr/lib/pkgconfig/dolfin.pc"
 
 }
 

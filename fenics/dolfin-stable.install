@@ -1,9 +1,9 @@
 post_install() {
 cat << EOF
 
-Be sure to set the appropriate environment variables, e.g. add the line:
+You may need to set the appropriate environment variables, e.g. add the line:
 
-  source /etc/dolfin.conf
+  source /etc/dolfin/dolfin.conf
 
 to your ~/.bashrc file.
 

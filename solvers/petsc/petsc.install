@@ -1,0 +1,14 @@
+post_install() {
+cat << EOF
+
+Now add:
+
+    export PETSC_DIR=/usr/linux-gnu-cxx-debug
+
+to your ~/.bashrc file.
+
+EOF
+
+}
+
+# vim:set ts=2 sw=2 et:
