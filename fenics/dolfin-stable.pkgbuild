@@ -1,24 +1,22 @@
 # Maintainer: Myles English <myles at rockhead dot biz>
 pkgname=dolfin
-pkgver=0.9.7
+pkgver=0.9.8
 pkgrel=1
 pkgdesc="the C++/Python interface of FEniCS, providing a consistent PSE (Problem Solving Environment) for ordinary and partial differential equations."
 arch=(any)
 url="http://launchpad.net/dolfin"
 license=('GPL')
 _patchname="patch.diff"
-depends=('python' 'boost' 'libxml2' 'lapack' 'blas' 'swig')
+depends=('python' 'boost' 'libxml2' 'lapack' 'blas' 'swig' 'armadillo')
 makedepends=('scons')
 optdepends=()
 options=(!emptydirs)
 install=dolfin.install
 source=($url/trunk/$pkgver/+download/$pkgname-$pkgver.tar.gz
-        patch.diff)
+	patch.diff)
 noextract=()
-md5sums=('4fb45e99ee165c150f61ff62a81d0e1b'
-         '6b696964d5a15cb870d399f81648ecce')
-
-# enableDemos=yes might require FFC, UFL, Instant, FIAT
+md5sums=('e8bd02d8a40c9d460beea3e5d074f271'
+	 'f7df4ab0c8f5d3aa901adabeaff6dfc9')
 
 build() {
   cd "$srcdir/$pkgname-$pkgver"

@@ -1,7 +1,7 @@
 # Maintainer: Myles English <myles at rockhead dot biz>
 # WORKS
 pkgname=ufc
-pkgver=1.4.0
+pkgver=1.4.1
 pkgrel=1
 pkgdesc="A unified framework for finite element assembly."
 arch=(any)
@@ -10,7 +10,7 @@ license=('?')
 depends=('python' 'scons' 'boost' 'swig')
 options=(!emptydirs)
 source=($url/trunk/$pkgver/+download/$pkgname-$pkgver.tar.gz)
-md5sums=('48abe4108ce4038c90d129383fd4ebad')
+md5sums=('d552d0e2220bfa23d7805c7ea563d1c3')
 
 build() {
   cd "$srcdir/$pkgname-$pkgver"

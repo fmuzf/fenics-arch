@@ -1,7 +1,7 @@
 # Maintainer: Myles English <myles at rockhead dot biz>
 # WORKS
 pkgname=ufl
-pkgver=0.5.2
+pkgver=0.5.3
 pkgrel=1
 pkgdesc="Unified form language."
 arch=(any)
@@ -10,7 +10,7 @@ license=('GPL')
 depends=('python')
 options=(!emptydirs)
 source=($url/trunk/$pkgver/+download/$pkgname-$pkgver.tar.gz)
-md5sums=('735247217148ed36cd3187485a4aab02')
+md5sums=('40b05a7023b60bd7b738b42052e342e4')
 
 build() {
   cd "$srcdir/$pkgname-$pkgver"

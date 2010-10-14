@@ -1,7 +1,7 @@
 # Maintainer: Myles English <myles at rockhead dot biz>
 # WORKS
 pkgname=fiat
-pkgver=0.9.1
+pkgver=0.9.2
 pkgrel=1
 pkgdesc="Supports generation of arbitrary order instances of the Lagrange elements on lines, triangles, and tetrahedra."
 arch=(any)
@@ -10,7 +10,7 @@ license=('GPL')
 depends=('python' 'scons')
 options=(!emptydirs)
 source=($url/trunk/$pkgver/+download/$pkgname-$pkgver.tar.gz)
-md5sums=('888daf9ad0337a10ac72302d150d6a26')
+md5sums=('42178e666b264df9d0ab63ecddbee8ec')
 
 build() {
   cd "$srcdir/$pkgname-$pkgver"

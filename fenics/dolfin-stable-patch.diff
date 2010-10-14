@@ -1,138 +1,16 @@
-*** a/scons/simula-scons/simula_scons/pkgconfiggenerators/boost_program_options.py
---- b/scons/simula-scons/simula_scons/pkgconfiggenerators/boost_program_options.py
-***************
-*** 60,73 ****
-    lib_dir = os.path.join(boost.getBoostDir(sconsEnv=sconsEnv), 'lib')
-    po_lib = "boost_program_options"
-    app = os.path.join(os.getcwd(), "a.out")
-!   cmdstr = "%s -o %s -L%s -l%s %s" % \
-!            (linker, app, lib_dir, po_lib, cpp_file.replace('.cpp', '.o'))
-    linkFailed, cmdoutput = getstatusoutput(cmdstr)
-    if linkFailed:
-      # try to append -mt to lib
-      po_lib += "-mt"
-!     cmdstr = "%s -o %s -L%s -l%s %s" % \
-!              (linker, app, lib_dir, po_lib, cpp_file.replace('.cpp', '.o'))
-      linkFailed, cmdoutput = getstatusoutput(cmdstr)
-      if linkFailed:
-        remove_cppfile(cpp_file, ofile=True)
---- 60,73 ----
-    lib_dir = os.path.join(boost.getBoostDir(sconsEnv=sconsEnv), 'lib')
-    po_lib = "boost_program_options"
-    app = os.path.join(os.getcwd(), "a.out")
-!   cmdstr = "%s  %s -o %s -L%s -l%s" % \
-!            (linker, cpp_file.replace('.cpp', '.o'), app, lib_dir, po_lib)
-    linkFailed, cmdoutput = getstatusoutput(cmdstr)
-    if linkFailed:
-      # try to append -mt to lib
-      po_lib += "-mt"
-!     cmdstr = "%s %s -o %s -L%s -l%s" % \
-!              (linker, cpp_file.replace('.cpp', '.o'), app, lib_dir, po_lib)
-      linkFailed, cmdoutput = getstatusoutput(cmdstr)
-      if linkFailed:
-        remove_cppfile(cpp_file, ofile=True)
-*** a/scons/simula-scons/simula_scons/pkgconfiggenerators/libxml.py
---- b/scons/simula-scons/simula_scons/pkgconfiggenerators/libxml.py
-***************
-*** 46,52 ****
-                                         program=cpp_test_version_str,
-                                         errormsg=cmdoutput)
-  
-!     cmdstr = "%s -o a.out %s %s" % (linker, libs, cppfile.replace('.cpp', '.o'))
-      linkFailed, cmdoutput = getstatusoutput(cmdstr)
-      if linkFailed:
-          remove_cppfile(cppfile, ofile=True)
---- 46,52 ----
-                                         program=cpp_test_version_str,
-                                         errormsg=cmdoutput)
-  
-!     cmdstr = "%s %s -o a.out %s" % (linker, cppfile.replace('.cpp', '.o'), libs)
-      linkFailed, cmdoutput = getstatusoutput(cmdstr)
-      if linkFailed:
-          remove_cppfile(cppfile, ofile=True)
-***************
-*** 230,237 ****
-                                         program=cpp_test_lib_str,
-                                         errormsg=cmdoutput)
-  
-!     cmdstr = "%s -o a.out %s %s" % \
-!              (linker, libs, cpp_file.replace('.cpp', '.o'))
-      linkFailed, cmdoutput = getstatusoutput(cmdstr)
-      if linkFailed:
-          remove_cppfile(cpp_file, ofile=True)
---- 230,237 ----
-                                         program=cpp_test_lib_str,
-                                         errormsg=cmdoutput)
-  
-!     cmdstr = "%s %s -o a.out %s" % \
-!              (linker, cpp_file.replace('.cpp', '.o'), libs)
-      linkFailed, cmdoutput = getstatusoutput(cmdstr)
-      if linkFailed:
-          remove_cppfile(cpp_file, ofile=True)
-*** a/scons/simula-scons/simula_scons/pkgconfiggenerators/boost_filesystem.py
---- b/scons/simula-scons/simula_scons/pkgconfiggenerators/boost_filesystem.py
-***************
-*** 47,77 ****
-    libs = [filesystem_lib]
-    system_lib = "boost_system"
-    app = os.path.join(os.getcwd(), "a.out")
-!   cmdstr = "%s -o %s -L%s -l%s %s" % (linker, app, lib_dir, filesystem_lib,
-!                                       cpp_file.replace('.cpp', '.o'))
-    linkFailed, cmdoutput = getstatusoutput(cmdstr)
-    if linkFailed:
-      # on newer versions of Boost, Boost.FileSystem requires to link
-      # with Boost.System:
-      libs.append(system_lib)
-!     cmdstr = "%s -o %s -L%s -l%s -l%s %s" % \
-!            (linker, app, lib_dir, filesystem_lib, system_lib,
-!             cpp_file.replace('.cpp', '.o'))
-      linkFailed, cmdoutput = getstatusoutput(cmdstr)
-    if linkFailed:
-      # try to append -mt to lib
-      filesystem_lib += "-mt"
-      libs = [filesystem_lib]
-!     cmdstr = "%s -o %s -L%s -l%s %s" % (linker, app, lib_dir, filesystem_lib,
-!                                         cpp_file.replace('.cpp', '.o'))
-      linkFailed, cmdoutput = getstatusoutput(cmdstr)
-    if linkFailed:
-      # again, try to link with Boost.System:
-      system_lib += "-mt"
-      libs.append(system_lib)
-!     cmdstr = "%s -o %s -L%s -l%s -l%s %s" % \
-!            (linker, app, lib_dir, filesystem_lib, system_lib,
-!             cpp_file.replace('.cpp', '.o'))
-      linkFailed, cmdoutput = getstatusoutput(cmdstr)
-    if linkFailed:
-      remove_cppfile(cpp_file, ofile=True)
---- 47,77 ----
-    libs = [filesystem_lib]
-    system_lib = "boost_system"
-    app = os.path.join(os.getcwd(), "a.out")
-!   cmdstr = "%s %s -o %s -L%s -l%s" % (linker, cpp_file.replace('.cpp', '.o'),
-!                                       app, lib_dir, filesystem_lib)
-    linkFailed, cmdoutput = getstatusoutput(cmdstr)
-    if linkFailed:
-      # on newer versions of Boost, Boost.FileSystem requires to link
-      # with Boost.System:
-      libs.append(system_lib)
-!     cmdstr = "%s %s -o %s -L%s -l%s -l%s" % \
-!              (linker, cpp_file.replace('.cpp', '.o'),
-!               app, lib_dir, filesystem_lib, system_lib)
-      linkFailed, cmdoutput = getstatusoutput(cmdstr)
-    if linkFailed:
-      # try to append -mt to lib
-      filesystem_lib += "-mt"
-      libs = [filesystem_lib]
-!     cmdstr = "%s %s -o %s -L%s -l%s" % (linker, cpp_file.replace('.cpp', '.o'),
-!                                         app, lib_dir, filesystem_lib)
-      linkFailed, cmdoutput = getstatusoutput(cmdstr)
-    if linkFailed:
-      # again, try to link with Boost.System:
-      system_lib += "-mt"
-      libs.append(system_lib)
-!     cmdstr = "%s %s -o %s -L%s -l%s -l%s" % \
-!              (linker, cpp_file.replace('.cpp', '.o'),
-!               app, lib_dir, filesystem_lib, system_lib)
-      linkFailed, cmdoutput = getstatusoutput(cmdstr)
-    if linkFailed:
-      remove_cppfile(cpp_file, ofile=True)
+--- a/scons/simula-scons/simula_scons/pkgconfiggenerators/armadillo.py
++++ b/scons/simula-scons/simula_scons/pkgconfiggenerators/armadillo.py
+@@ -101,6 +101,13 @@
+             cmdstr = "%s %s -o a.out %s" % \
+                      (linker, cpp_file.replace('.cpp', '.o'), libs)
+             linkFailed, cmdoutput = getstatusoutput(cmdstr)
++            if linkFailed:
++                # try adding -llapack to get around Arch Linux "undefined
++                # reference to dgels_" problem
++                libs += " -llapack"
++                cmdstr = "%s %s -o a.out %s" % \
++                         (linker, cpp_file.replace('.cpp', '.o'), libs)
++                linkFailed, cmdoutput = getstatusoutput(cmdstr)
+             if not linkFailed:
+                 break
+         else:
