@@ -1,0 +1,47 @@
+# Contributor: Feng Wang <wanng.fenng@gmail.com>
+
+pkgname=trilinos
+pkgver=10.6.0
+pkgrel=1
+pkgdesc="The Trilinos Project is an effort to develop algorithms and enabling technologies within an object-oriented software framework for the solution of large-scale, complex multi-physics engineering and scientific problems."
+arch=(any)
+url="http://trilinos.sandia.gov/index.html"
+license=('LGPL3')
+depends=()
+source=(http://trilinos.sandia.gov/download/files/trilinos-10.6.0-Source.tar.gz)
+makedepends=('gcc' 'mpich2' 'perl' 'blas' 'lapack')
+md5sums=( 'd409885c1a2c9da7de4b2fdd26045f47' )
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver-Source"
+  [[ -e build ]] || mkdir build 
+  cd build
+BEXTRA_ARGS=$@
+        
+cmake \
+    .. \
+    -DCMAKE_BUILD_TYPE:STRING=DEBUG \
+    -DMPI_BASE_DIR:PATH="/opt/mpich2" \
+    -DTPL_ENABLE_MPI:BOOL=ON \
+    -DTrilinos_ENABLE_ALL_PACKAGES:BOOL=ON \
+    -DTrilinos_ENABLE_PyTrilinos:BOOL=ON \
+    -DTrilinos_ENABLE_Belos:BOOL=OFF \
+    -DTrilinos_ENABLE_rtop:BOOL=OFF \
+    -DTrilinos_ENABLE_TESTS:BOOL=OFF \
+    -DBUILD_SHARED_LIBS:BOOL=ON \
+    -DPyTrilinos_INSTALL_PREFIX:PATH=$HOME/.virtualenvs/fenics \
+    -DCMAKE_INSTALL_PREFIX:PATH=/usr \
+    $EXTRA_ARGS \
+    || return 1
+
+          #-D Trilinos_ENABLE_rythmos:BOOL=OFF
+          #-D Trilinos_ENABLE_nox:BOOL=OFF
+#         -D CMAKE_INSTALL_PREFIX:PATH=$HOME/fenics/trilinos \
+make || return 1
+make DESTDIR="$pkgdir" install
+}
+
+package() {
+    cd $srcdir/$pkgname-$pkgver-Source/build
+    make install DESTDIR=$pkgdir
+}
