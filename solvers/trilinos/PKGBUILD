@@ -9,14 +9,14 @@ url="http://trilinos.sandia.gov/index.html"
 license=('LGPL3')
 depends=()
 source=(http://trilinos.sandia.gov/download/files/trilinos-10.6.0-Source.tar.gz)
-makedepends=('gcc' 'mpich2' 'perl' 'blas' 'lapack')
+makedepends=('python2' 'gcc' 'mpich2' 'perl' 'blas' 'lapack')
 md5sums=( 'd409885c1a2c9da7de4b2fdd26045f47' )
 
 build() {
   cd "$srcdir/$pkgname-$pkgver-Source"
   [[ -e build ]] || mkdir build 
   cd build
-BEXTRA_ARGS=$@
+  EXTRA_ARGS=$@
         
 cmake \
     .. \
@@ -24,22 +24,33 @@ cmake \
     -DMPI_BASE_DIR:PATH="/opt/mpich2" \
     -DTPL_ENABLE_MPI:BOOL=ON \
     -DTrilinos_ENABLE_ALL_PACKAGES:BOOL=ON \
+    -DML_ENABLE_Aztec:BOOL=ON \
     -DTrilinos_ENABLE_PyTrilinos:BOOL=ON \
     -DTrilinos_ENABLE_Belos:BOOL=OFF \
     -DTrilinos_ENABLE_rtop:BOOL=OFF \
     -DTrilinos_ENABLE_TESTS:BOOL=OFF \
     -DBUILD_SHARED_LIBS:BOOL=ON \
-    -DPyTrilinos_INSTALL_PREFIX:PATH=$HOME/.virtualenvs/fenics \
+    -DPYTHON_EXECUTABLE:PATH=/usr/bin/python2 \
+    -DML_ENABLE_MLapi:BOOL=ON \
     -DCMAKE_INSTALL_PREFIX:PATH=/usr \
     $EXTRA_ARGS \
     || return 1
 
+#    -DPyTrilinos_INSTALL_PREFIX:PATH=/usr/lib/python2.7 \
+#PyTrilinos_INSTALL_DIR:PATH=/usr/lib/python2.7/site-packages/PyTrilinos
+
+# trying to fix dolfin/la/TrilinosPreconditioner.cpp:155:3: error: ‘SetDefaults’ is not a member of ‘ML_Epetra’
+#        -DML_ENABLE_Aztec:BOOL=ON # no effect
           #-D Trilinos_ENABLE_rythmos:BOOL=OFF
+    #ML_ENABLE_Aztec2_1:BOOL=ON      # doesn't compile
+    #ML_ENABLE_Cfunc:BOOL=OFF        # doesn't compile
           #-D Trilinos_ENABLE_nox:BOOL=OFF
-#         -D CMAKE_INSTALL_PREFIX:PATH=$HOME/fenics/trilinos \
+
+
 make || return 1
 make DESTDIR="$pkgdir" install
 }
+
 
 package() {
     cd $srcdir/$pkgname-$pkgver-Source/build

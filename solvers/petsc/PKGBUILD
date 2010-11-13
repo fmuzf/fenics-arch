@@ -1,28 +1,32 @@
 # Maintainer: Myles English <myles at rockhead dot biz>
 pkgname=petsc
-pkgver=3.0.0_p12
-_config=linux-gnu-cxx-debug
+pkgver=3.1_p5
+_config=installed-petsc
 pkgrel=1
 pkgdesc="Portable, extensible toolkit for scientific computation"
 arch=('i686' 'x86_64')
 url="http://www.mcs.anl.gov/petsc/petsc-as"
 license=('?')
-depends=('gcc' 'mpich2' 'boost' 'umfpack')
-source=(http://ftp.mcs.anl.gov/pub/petsc/software_old/${pkgname}-${pkgver/_p12/}.tar.gz)
-md5sums=('8712c3e49e8d872fdd509ba0187184da')
+depends=('python2' 'gcc' 'mpich2' 'boost' 'umfpack')
+source=(http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/${pkgname}-${pkgver/_p5/}-p5.tar.gz)
+md5sums=('b286063545a52b45f5f8960acf503ce2')
 
 build() {
    cd ${srcdir}/${pkgname}-${pkgver/_/-}
 
    export PETSC_DIR=${srcdir}/${pkgname}-${pkgver/_/-}
 
-   ./config/configure.py --prefix=${pkgdir}/usr/${_config} \
+   #--prefix=${pkgdir}/usr/${_config} \
+   python2 ./config/configure.py --prefix=${pkgdir}/usr/${_config} \
        --with-mpi-dir=/opt/mpich2 \
        --with-sieve --with-clanguage=cxx --with-boost-dir=/usr/lib \
        --with-umfpack=1 --with-umfpack-dir=/usr/lib --with-clanguage=c++ \
        --with-shared=1 --with-mpi-shared=1 || return 1
    make || return 1
-   make install PETSC_DIR=${srcdir}/${pkgname}-${pkgver/_/-} || return 1
+  ### sed -i s'/.\/config\/install.py/python2 .\/config\/install.py/' makefile
+ # make PETSC_DIR=/home/myles/aur/packages/petsc-3.1/src/petsc-3.1-p5 PETSC_ARCH=linux-gnu-cxx-debug install
+ # make PETSC_DIR=/home/myles/aur/packages/petsc-3.1/pkg/usr/linux-gnu-cxx-debug test
+   make PETSC_DIR=${srcdir}/${pkgname}-${pkgver/_/-} install || return 1
    export PETSC_DIR=/usr/${_config}
    sed -i "s#${pkgdir}##g" "${pkgdir}/usr/${_config}/conf/variables"
 }
