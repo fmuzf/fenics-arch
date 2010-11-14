@@ -1,43 +1,49 @@
 # Maintainer: Myles English <myles at rockhead dot biz>
 pkgname=dolfin
-pkgver=0.9.8
+pkgver=0.9.9
 pkgrel=1
 pkgdesc="the C++/Python interface of FEniCS, providing a consistent PSE (Problem Solving Environment) for ordinary and partial differential equations."
 arch=(any)
 url="http://launchpad.net/dolfin"
 license=('GPL')
 _patchname="patch.diff"
-depends=('python' 'boost' 'libxml2' 'lapack' 'blas' 'swig' 'armadillo')
+depends=('python2' 'boost' 'libxml2' 'lapack' 'blas' 'swig' 'trilinos') #'armadillo')
 makedepends=('scons')
 optdepends=()
 options=(!emptydirs)
 install=dolfin.install
-source=($url/trunk/$pkgver/+download/$pkgname-$pkgver.tar.gz
-	patch.diff)
+source=($url/trunk/$pkgver/+download/$pkgname-$pkgver.tar.gz)
 noextract=()
-md5sums=('e8bd02d8a40c9d460beea3e5d074f271'
-	 'f7df4ab0c8f5d3aa901adabeaff6dfc9')
+md5sums=('57a892f9668abd5ee79c645475422c6a')
+	 #'f7df4ab0c8f5d3aa901adabeaff6dfc9')
 
 build() {
-  cd "$srcdir/$pkgname-$pkgver"
+    cd "$srcdir/$pkgname-$pkgver"
+    [[ -e build ]] || mkdir build 
+    cd build
 
-  patch -Np1 -i ${startdir}/${_patchname} || return 1
+    cmake .. -DCMAKE_INSTALL_PREFIX=/usr \
+	     -DPYTHON_EXECUTABLE:PATH=/usr/bin/python2 \
+	     -DPYTHON_INCLUDE_DIR:PATH=/usr/include/python2.7 \
+             -DPYTHON_LIBRARY:FILEPATH=/usr/lib/libpython2.7.so
+    make
 
-  scons configure prefix="${pkgdir}/usr" withBoostDir=/usr enableDemos=yes   \ 
-    	 withPetscDir=/usr/linux-gnu-cxx-debug || return 1 # 
+    # configure prefix="${pkgdir}/usr" withBoostDir=/usr enableDemos=yes   \ 
+    # 	 withPetscDir=/usr/linux-gnu-cxx-debug || return 1 # 
   	# withUmfpackDir=/usr \
   	# withTrilinosDir=~/fenics/trilinos \
   	# pythonModuleDir=~/.virtualenvs/fenics/lib/python2.6/site-packages \
   	# pythonExtDir=~/.virtualenvs/fenics/lib/python2.6/site-packages \
   	# withMpiCompiler=/opt/mpich2/bin/mpicxx &&
 
-  mkdir -p "${pkgdir}/etc/dolfin" &&
-  cp "$srcdir/$pkgname-$pkgver/dolfin.conf" "${pkgdir}/etc/dolfin/" &&
-  sed -i "s#${pkgdir}##g" "${pkgdir}/etc/dolfin/dolfin.conf" &&
+    mkdir -p "${pkgdir}/etc/dolfin" &&
+    cp "$srcdir/$pkgname-$pkgver/dolfin.conf" "${pkgdir}/etc/dolfin/" &&
+    sed -i "s#${pkgdir}##g" "${pkgdir}/etc/dolfin/dolfin.conf"
+}
 
-  scons install || return 1
-  sed -i "s#${pkgdir}##g" "${pkgdir}/usr/lib/pkgconfig/dolfin.pc"
-
+package() {
+    cd $srcdir/$pkgname-$pkgver/build
+    make install DESTDIR=$pkgdir
 }
 
 # vim:set ts=2 sw=2 et:

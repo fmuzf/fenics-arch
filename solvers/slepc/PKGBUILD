@@ -1,7 +1,9 @@
-# Maintainer: Myles English <myles at rockhead dot biz>
+# Maintainer: Myles English <myles at rockhead dot biz> #linux-gnu-cxx-debug
 pkgname=slepc
 pkgver=3.1_p4
-_config=linux-gnu-cxx-debug
+_config=slepc
+_petsc_config=petsc
+#installed-petsc
 pkgrel=1
 pkgdesc="Scalable library for Eigenvalue problem computations"
 arch=('i686' 'x86_64')
@@ -14,23 +16,27 @@ md5sums=('96057d4ee9d1a17c7b1aa614d864f84a')
 build() {
    cd ${srcdir}/${pkgname}-${pkgver/_/-}
 
-   export PETSC_DIR=/usr/${_config}
+   export PETSC_DIR=/usr/${_petsc_config}
    unset PETSC_ARCH
-   export PETSC_ARCH=${_config}
+   
    unset SLEPC_DIR
    export SLEPC_DIR=${srcdir}/${pkgname}-${pkgver/_/-}
 
    python2 ./configure --prefix=${pkgdir}/usr/${_config} || return 1
-
+   export PETSC_ARCH=${_petsc_config}
    make || return 1
+##--prefix=/home/myles/aur/packages/petsc-3.1/pkg/usr/installed-petsc
    make install  || return 1
-   #unset PETSC_ARCH
-   sed -i "s#${pkgdir}##g" "${pkgdir}/usr/${_config}/conf/slepcvariables"
-   # file conflicts with petsc:
-   #/usr/${_config}/include/finclude/index.html
-   #/usr/${_config}/include/finclude/makefile.html
+   export SLEPC_DIR=/home/myles/aur/packages/slepc-3.1/pkg/usr/installed-petsc
+   unset PETSC_ARCH
+
+   sed -i "s#${pkgdir}##g" "${srcdir}/usr/${_config}/conf/slepcvariables"
+##include ${SLEPC_DIR}/${PETSC_ARCH}/conf/slepcvariables
 
    # mkdir -p
    #${pkgdir}/etc/ld.so.conf.d echo "/usr/lib/${pkgname}" >
    #${pkgdir}/etc/ld.so.conf.d/${pkgname}.conf}
+#slepc: /usr/installed-petsc/include/finclude/index.html exists in filesystem
+#slepc: /usr/installed-petsc/include/finclude/makefile.html exists in filesystem
+
 }

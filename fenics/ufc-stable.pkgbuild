@@ -1,22 +1,31 @@
 # Maintainer: Myles English <myles at rockhead dot biz>
 # WORKS
 pkgname=ufc
-pkgver=1.4.1
+pkgver=1.4.2
 pkgrel=1
 pkgdesc="A unified framework for finite element assembly."
 arch=(any)
 url="http://launchpad.net/ufc"
 license=('?')
-depends=('python' 'scons' 'boost' 'swig')
+depends=('python2' 'boost' 'swig')
 options=(!emptydirs)
 source=($url/trunk/$pkgver/+download/$pkgname-$pkgver.tar.gz)
-md5sums=('d552d0e2220bfa23d7805c7ea563d1c3')
+md5sums=('a1e6f1a7914e1cbd644fd00c28397d98')
 
 build() {
-  cd "$srcdir/$pkgname-$pkgver"
-  #scons enablePyUFC=No
-  scons install prefix=$pkgdir/usr boostDir=/usr || return 1
-  sed -i "s#${pkgdir}##g" "${pkgdir}/usr/lib/pkgconfig/ufc-1.pc"
+    cd "$srcdir/$pkgname-$pkgver"
+    [[ -e build ]] || mkdir build 
+    cd "$srcdir/$pkgname-$pkgver/build"
+    cmake .. -DCMAKE_INSTALL_PREFIX=/usr \
+	     -DPYTHON_EXECUTABLE:PATH=/usr/bin/python2 \
+	     -DPYTHON_INCLUDE_DIR:PATH=/usr/include/python2.7 \
+             -DPYTHON_LIBRARY:FILEPATH=/usr/lib/libpython2.7.so
+    make
+}
+
+package() {
+    cd $srcdir/$pkgname-$pkgver/build
+    make install DESTDIR=$pkgdir
 }
 
 # vim:set ts=2 sw=2 et:

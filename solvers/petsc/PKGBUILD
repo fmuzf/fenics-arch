@@ -1,7 +1,8 @@
 # Maintainer: Myles English <myles at rockhead dot biz>
 pkgname=petsc
 pkgver=3.1_p5
-_config=installed-petsc
+_config=linux-gnu-cxx-debug
+#installed-petsc
 pkgrel=1
 pkgdesc="Portable, extensible toolkit for scientific computation"
 arch=('i686' 'x86_64')
@@ -12,9 +13,10 @@ source=(http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/${pkgname}-${pkgver/_
 md5sums=('b286063545a52b45f5f8960acf503ce2')
 
 build() {
-   cd ${srcdir}/${pkgname}-${pkgver/_/-}
-
-   export PETSC_DIR=${srcdir}/${pkgname}-${pkgver/_/-}
+    _build_dir=${srcdir}/${pkgname}-${pkgver/_/-}
+   cd ${_build_dir}
+   unset PETSC_ARCH
+   export PETSC_DIR=${_build_dir}
 
    #--prefix=${pkgdir}/usr/${_config} \
    python2 ./config/configure.py --prefix=${pkgdir}/usr/${_config} \
@@ -23,10 +25,12 @@ build() {
        --with-umfpack=1 --with-umfpack-dir=/usr/lib --with-clanguage=c++ \
        --with-shared=1 --with-mpi-shared=1 || return 1
    make || return 1
-  ### sed -i s'/.\/config\/install.py/python2 .\/config\/install.py/' makefile
+
+   sed -i s'/.\/config\/install.py/python2 .\/config\/install.py/' makefile
  # make PETSC_DIR=/home/myles/aur/packages/petsc-3.1/src/petsc-3.1-p5 PETSC_ARCH=linux-gnu-cxx-debug install
  # make PETSC_DIR=/home/myles/aur/packages/petsc-3.1/pkg/usr/linux-gnu-cxx-debug test
-   make PETSC_DIR=${srcdir}/${pkgname}-${pkgver/_/-} install || return 1
-   export PETSC_DIR=/usr/${_config}
-   sed -i "s#${pkgdir}##g" "${pkgdir}/usr/${_config}/conf/variables"
+   #make PETSC_DIR=${_build_dir} install || return 1
+   make PETSC_DIR=${_build_dir} PETSC_ARCH=${_config} install || return 1
+   #export PETSC_DIR=/usr/${_config}
+   sed -i 's#${pkgdir}##g' "${_build_dir}/${_config}/conf/petscvariables"
 }

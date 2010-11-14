@@ -1,7 +1,7 @@
 # Maintainer: Myles English <myles at rockhead dot biz>
 # WORKS
 pkgname=ffc
-pkgver=0.9.3
+pkgver=0.9.4
 pkgrel=1
 pkgdesc="A compiler for finite element variational forms."
 arch=(any)
@@ -11,7 +11,7 @@ depends=('python' 'fiat' 'ufc' 'ufl' 'python-numpy')
 optdepends=('FErari: optimisation support')
 options=(!emptydirs)
 source=($url/trunk/$pkgver/+download/$pkgname-$pkgver.tar.gz)
-md5sums=('8b009bc94b17d3e16e3ed6ff8b2a6e8a')
+md5sums=('be4e74e62e84dc68eb7da2c0ff33ea93')
 
 build() {
   cd "$srcdir/$pkgname-$pkgver"
