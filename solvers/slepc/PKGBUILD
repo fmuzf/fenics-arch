@@ -1,9 +1,7 @@
-# Maintainer: Myles English <myles at rockhead dot biz> #linux-gnu-cxx-debug
+# Maintainer: Myles English <myles at rockhead dot biz>
 pkgname=slepc
 pkgver=3.1_p4
-_config=slepc
-_petsc_config=petsc
-#installed-petsc
+_config=linux-gnu-cxx-debug
 pkgrel=1
 pkgdesc="Scalable library for Eigenvalue problem computations"
 arch=('i686' 'x86_64')
@@ -13,30 +11,24 @@ depends=('python2' 'gcc' 'petsc')
 install=slepc.install
 source=(http://www.grycap.upv.es/slepc/download/distrib/${pkgname}-${pkgver/_/-}.tgz)
 md5sums=('96057d4ee9d1a17c7b1aa614d864f84a')
+
 build() {
-   cd ${srcdir}/${pkgname}-${pkgver/_/-}
+    local _build_dir=${srcdir}/${pkgname}-${pkgver/_/-}
+    local _install_dir=/usr/lib/slepc/${_config}
+    cd ${_build_dir}
 
-   export PETSC_DIR=/usr/${_petsc_config}
-   unset PETSC_ARCH
-   
-   unset SLEPC_DIR
-   export SLEPC_DIR=${srcdir}/${pkgname}-${pkgver/_/-}
+    unset PETSC_ARCH   
+    export SLEPC_DIR=${_build_dir}
 
-   python2 ./configure --prefix=${pkgdir}/usr/${_config} || return 1
-   export PETSC_ARCH=${_petsc_config}
-   make || return 1
-##--prefix=/home/myles/aur/packages/petsc-3.1/pkg/usr/installed-petsc
-   make install  || return 1
-   export SLEPC_DIR=/home/myles/aur/packages/slepc-3.1/pkg/usr/installed-petsc
-   unset PETSC_ARCH
+    python2 ./configure --prefix=${pkgdir}${_install_dir} || return 1
 
-   sed -i "s#${pkgdir}##g" "${srcdir}/usr/${_config}/conf/slepcvariables"
-##include ${SLEPC_DIR}/${PETSC_ARCH}/conf/slepcvariables
+    export PETSC_ARCH=installed-petsc
 
-   # mkdir -p
-   #${pkgdir}/etc/ld.so.conf.d echo "/usr/lib/${pkgname}" >
-   #${pkgdir}/etc/ld.so.conf.d/${pkgname}.conf}
-#slepc: /usr/installed-petsc/include/finclude/index.html exists in filesystem
-#slepc: /usr/installed-petsc/include/finclude/makefile.html exists in filesystem
+    make || return 1
+    make install  || return 1
 
+    export SLEPC_DIR=${_install_dir}
+    unset PETSC_ARCH
+
+    sed -i 's#'"${pkgdir}"'##g' "${pkgdir}${_install_dir}/conf/slepcvariables"
 }

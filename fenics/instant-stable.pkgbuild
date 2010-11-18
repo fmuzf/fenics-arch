@@ -1,0 +1,24 @@
+# Maintainer: Myles English <myles at rockhead dot biz>
+# Contributor: DarkHeart <fumbles@ymail.com>
+pkgname=instant
+pkgver=0.9.8
+pkgrel=1
+pkgdesc="A Python module allowing for instant inlining of C and C++ code in Python"
+arch=('any')
+url="http://launchpad.net/instant"
+license=('BSD')
+depends=('python2' 'swig')
+source=(http://launchpad.net/instant/trunk/0.9.8/+download/$pkgname-$pkgver.tar.gz)
+md5sums=('e77edecc222bd2916947f9eca49ca131')
+build() {
+  cd $srcdir/$pkgname-$pkgver
+
+#  sed 's|"share",||g' -i setup.py
+
+  python2 setup.py build || return 1
+  python2 setup.py install --root=$pkgdir
+
+  #install -m644 -D ../LICENSE $pkgdir/usr/share/licenses/$pkgname/LICENSE
+}
+
+# vim:set ts=2 sw=2 et:

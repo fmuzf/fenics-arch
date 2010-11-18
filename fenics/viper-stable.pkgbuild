@@ -2,18 +2,18 @@
 pkgname=viper
 #_lpname=fenics-viper
 pkgver=0.4.6
-pkgrel=1
+pkgrel=2
 pkgdesc="A minimalistic scientific plotter and run-time visualization module. Viper has support for visualising meshes and solutions in DOLFIN."
 arch=(any)
 url="http://launchpad.net/fenics-viper"
 license=('GNU LGPL v2.1')
-depends=('python' 'vtk') # numpy
+depends=('python2' 'vtk') # numpy
 options=(!emptydirs)
 source=($url/trunk/$pkgver/+download/$pkgname-$pkgver.tar.gz)
 md5sums=('2ad5a87ff2410d41a35a09ddc3d43836')
 
 build() {
   cd "$srcdir/$pkgname-$pkgver"
-  python setup.py install --prefix=/usr --root="$pkgdir" || return 1
+  python2 setup.py install --prefix=/usr --root="$pkgdir" || return 1
 
 }

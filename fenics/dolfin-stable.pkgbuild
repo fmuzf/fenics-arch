@@ -11,7 +11,6 @@ depends=('python2' 'boost' 'libxml2' 'lapack' 'blas' 'swig' 'trilinos') #'armadi
 makedepends=('scons')
 optdepends=()
 options=(!emptydirs)
-install=dolfin.install
 source=($url/trunk/$pkgver/+download/$pkgname-$pkgver.tar.gz)
 noextract=()
 md5sums=('57a892f9668abd5ee79c645475422c6a')
@@ -19,31 +18,25 @@ md5sums=('57a892f9668abd5ee79c645475422c6a')
 
 build() {
     cd "$srcdir/$pkgname-$pkgver"
+    patch -i ${startdir}/${_patchname} || return 1
+
     [[ -e build ]] || mkdir build 
     cd build
 
-    cmake .. -DCMAKE_INSTALL_PREFIX=/usr \
-	     -DPYTHON_EXECUTABLE:PATH=/usr/bin/python2 \
-	     -DPYTHON_INCLUDE_DIR:PATH=/usr/include/python2.7 \
-             -DPYTHON_LIBRARY:FILEPATH=/usr/lib/libpython2.7.so
+    cmake .. -DCMAKE_CXX_COMPILER=/usr/bin/g++ \
+	-DCMAKE_INSTALL_PREFIX=${pkg}/usr \
+	-DPYTHON_EXECUTABLE:PATH=/usr/bin/python2 \
+	-DPYTHON_INCLUDE_DIR:PATH=/usr/include/python2.7 \
+        -DPYTHON_LIBRARY:FILEPATH=/usr/lib/libpython2.7.so 
+	
     make
-
-    # configure prefix="${pkgdir}/usr" withBoostDir=/usr enableDemos=yes   \ 
-    # 	 withPetscDir=/usr/linux-gnu-cxx-debug || return 1 # 
-  	# withUmfpackDir=/usr \
-  	# withTrilinosDir=~/fenics/trilinos \
-  	# pythonModuleDir=~/.virtualenvs/fenics/lib/python2.6/site-packages \
-  	# pythonExtDir=~/.virtualenvs/fenics/lib/python2.6/site-packages \
-  	# withMpiCompiler=/opt/mpich2/bin/mpicxx &&
-
-    mkdir -p "${pkgdir}/etc/dolfin" &&
-    cp "$srcdir/$pkgname-$pkgver/dolfin.conf" "${pkgdir}/etc/dolfin/" &&
-    sed -i "s#${pkgdir}##g" "${pkgdir}/etc/dolfin/dolfin.conf"
 }
 
 package() {
     cd $srcdir/$pkgname-$pkgver/build
     make install DESTDIR=$pkgdir
+    #mkdir -p "${pkgdir}/etc/profile.d"
+    #mv "${pkgdir}/usr/share/dolfin/dolfin.conf" "${pkgdir}/etc/profile.d/dolfin.sh"
 }
 
 # vim:set ts=2 sw=2 et:

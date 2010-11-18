@@ -1,9 +1,10 @@
 post_install() {
+mv /tmp/petsc.conf /etc/ld.so.conf.d/
 cat << EOF
 
 Now add:
 
-    export PETSC_DIR=/usr/linux-gnu-cxx-debug
+    export PETSC_DIR=/usr/lib/petsc/linux-gnu-cxx-debug
 
 to your ~/.bashrc file.
 

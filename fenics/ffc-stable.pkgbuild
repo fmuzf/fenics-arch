@@ -7,7 +7,7 @@ pkgdesc="A compiler for finite element variational forms."
 arch=(any)
 url="http://launchpad.net/ffc"
 license=('GPL')
-depends=('python' 'fiat' 'ufc' 'ufl' 'python-numpy')
+depends=('python2' 'fiat' 'ufc' 'ufl' 'python-numpy')
 optdepends=('FErari: optimisation support')
 options=(!emptydirs)
 source=($url/trunk/$pkgver/+download/$pkgname-$pkgver.tar.gz)
@@ -15,5 +15,5 @@ md5sums=('be4e74e62e84dc68eb7da2c0ff33ea93')
 
 build() {
   cd "$srcdir/$pkgname-$pkgver"
-  python setup.py install --prefix=/usr --root="$pkgdir" --optimize=1 || return 1
+  python2 setup.py install --prefix=/usr --root="$pkgdir" --optimize=1 || return 1
 }
