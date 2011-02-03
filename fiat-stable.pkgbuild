@@ -1,5 +1,4 @@
 # Maintainer: Myles English <myles at rockhead dot biz>
-# WORKS
 pkgname=fiat
 pkgver=0.9.2
 pkgrel=2
