@@ -1,7 +1,7 @@
 # Maintainer: Myles English <myles at rockhead dot biz>
 pkgname=ufl
 pkgver=0.5.4
-pkgrel=2
+pkgrel=3
 pkgdesc="Unified form language."
 arch=(any)
 url="http://launchpad.net/ufl"
@@ -15,6 +15,5 @@ build() {
   cd "$srcdir/$pkgname-$pkgver"
   find ${srcdir} -name "*" -type f -exec \
       sed -i 's#\(/usr/bin/env \|/usr/bin/\)python[2-3]*#\1python2#' {} \;
-  python2 setup.py install --prefix=/usr --root="$pkgdir" || return 1
-
+  python2 setup.py install --prefix=/usr --root="$pkgdir"
 }

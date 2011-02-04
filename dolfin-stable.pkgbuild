@@ -1,7 +1,7 @@
 # Maintainer: Myles English <myles at rockhead dot biz>
 pkgname=dolfin
 pkgver=0.9.9
-pkgrel=1
+pkgrel=2
 pkgdesc="the C++/Python interface of FEniCS, providing a consistent PSE (Problem Solving Environment) for ordinary and partial differential equations."
 arch=(any)
 url="http://launchpad.net/dolfin"
@@ -14,12 +14,11 @@ options=(!emptydirs)
 source=($url/trunk/$pkgver/+download/$pkgname-$pkgver.tar.gz)
 noextract=()
 md5sums=('57a892f9668abd5ee79c645475422c6a')
-	 #'f7df4ab0c8f5d3aa901adabeaff6dfc9')
 
 build() {
     cd "$srcdir/$pkgname-$pkgver"
-    find ${srcdir} -name "*" -type f -exec sed -i 's#\(/usr/bin/env \|/usr/bin/\)python[2-3]*#\1python2#' {} \;
-#find ./ -name "*" -type f -exec sed -i '1s#^\#!/usr/bin/env python[ \t]*$#\#!/usr/bin/env python2#' {} \;
+    find ${srcdir} -name "*" -type f -exec \
+	sed -i 's#\(/usr/bin/env \|/usr/bin/\)python[2-3]*#\1python2#' {} \;
 
     patch -i ${startdir}/${_patchname}
 
@@ -38,8 +37,6 @@ build() {
 package() {
     cd $srcdir/$pkgname-$pkgver/build
     make install DESTDIR=$pkgdir
-    #mkdir -p "${pkgdir}/etc/profile.d"
-    #mv "${pkgdir}/usr/share/dolfin/dolfin.conf" "${pkgdir}/etc/profile.d/dolfin.sh"
 }
 
 # vim:set ts=2 sw=2 et:

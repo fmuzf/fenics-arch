@@ -1,7 +1,7 @@
 # Maintainer: Myles English <myles at rockhead dot biz>
 pkgname=ufc
 pkgver=1.4.2
-pkgrel=1
+pkgrel=2
 pkgdesc="A unified framework for finite element assembly."
 arch=(any)
 url="http://launchpad.net/ufc"
@@ -19,8 +19,6 @@ build() {
     # replace python with python2 everywhere
     find ${srcdir} -name "*" -type f -exec \
 	sed -i 's#\(/usr/bin/env \|/usr/bin/\)python[2-3]*#\1python2#' {} \;
-    #sed -i 's#/usr/bin/env python[^2]*#/usr/bin/env python2#' \
-#	${srcdir}/ufc-1.4.2/src/utils/python/ufc_benchmark/setup.py
 
     cmake .. -DCMAKE_INSTALL_PREFIX=/usr \
 	     -DPYTHON_EXECUTABLE:PATH=/usr/bin/python2 \
