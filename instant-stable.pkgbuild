@@ -7,16 +7,20 @@ pkgdesc="A Python module allowing for instant inlining of C and C++ code in Pyth
 arch=('any')
 url="http://launchpad.net/instant"
 license=('BSD')
+_patchname="patch.diff"
 depends=('python2' 'swig')
 source=(http://launchpad.net/instant/trunk/0.9.8/+download/$pkgname-$pkgver.tar.gz)
 md5sums=('e77edecc222bd2916947f9eca49ca131')
 build() {
   cd $srcdir/$pkgname-$pkgver
-
+  patch -Np1 -i ${startdir}/${_patchname}
 #  sed 's|"share",||g' -i setup.py
+  find ${srcdir} -name "*" -type f -exec sed -i 's#\(/usr/bin/env \|/usr/bin/\)python[2-3]*#\1python2#' {} \;
+  #find ${srcdir} -name "*" -type f -exec sed -i '1s#^\#!/usr/bin/env python[ \t]*$#\#!/usr/bin/env python2#' {} \;
 
-  python2 setup.py build || return 1
+  python2 setup.py build
   python2 setup.py install --root=$pkgdir
+
 
   #install -m644 -D ../LICENSE $pkgdir/usr/share/licenses/$pkgname/LICENSE
 }

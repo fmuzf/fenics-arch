@@ -5,7 +5,7 @@ PKG=~/aur/packages/fenics
 
 CWD=`pwd`
 for p in instant fiat ufc ufl viper ffc dolfin; do
-echo makepkg --source $p
+echo makepkg -f --source $p
 cd $PKG/$p
 #pf=`ls $p*.xz`
 makepkg --source

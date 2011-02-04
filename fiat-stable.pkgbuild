@@ -13,5 +13,7 @@ md5sums=('42178e666b264df9d0ab63ecddbee8ec')
 
 build() {
   cd "$srcdir/$pkgname-$pkgver"
+  find ${srcdir} -name "*" -type f -exec sed -i 's#\(/usr/bin/env \|/usr/bin/\)python[2-3]*#\1python2#' {} \;
+#find ${srcdir} -name "*" -type f -exec sed -i '1s#^\#!/usr/bin/env python[ \t]*$#\#!/usr/bin/env python2#' {} \;
   python2 setup.py install --prefix=/usr --root="$pkgdir" || return 1
 }

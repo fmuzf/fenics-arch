@@ -1,5 +1,4 @@
 # Maintainer: Myles English <myles at rockhead dot biz>
-# WORKS
 pkgname=ffc
 pkgver=0.9.4
 pkgrel=1
@@ -15,5 +14,7 @@ md5sums=('be4e74e62e84dc68eb7da2c0ff33ea93')
 
 build() {
   cd "$srcdir/$pkgname-$pkgver"
-  python2 setup.py install --prefix=/usr --root="$pkgdir" --optimize=1 || return 1
+  find ${srcdir} -name "*" -type f -exec sed -i 's#\(/usr/bin/env \|/usr/bin/\)python[2-3]*#\1python2#' {} \;
+  #find ${srcdir} -name "*" -type f -exec sed -i '1s#^\#!/usr/bin/env python[ \t]*$#\#!/usr/bin/env python2#' {} \;
+  python2 setup.py install --prefix=/usr --root="$pkgdir" --optimize=1
 }

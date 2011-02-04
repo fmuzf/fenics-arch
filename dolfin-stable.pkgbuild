@@ -18,7 +18,10 @@ md5sums=('57a892f9668abd5ee79c645475422c6a')
 
 build() {
     cd "$srcdir/$pkgname-$pkgver"
-    patch -i ${startdir}/${_patchname} || return 1
+    find ${srcdir} -name "*" -type f -exec sed -i 's#\(/usr/bin/env \|/usr/bin/\)python[2-3]*#\1python2#' {} \;
+#find ./ -name "*" -type f -exec sed -i '1s#^\#!/usr/bin/env python[ \t]*$#\#!/usr/bin/env python2#' {} \;
+
+    patch -i ${startdir}/${_patchname}
 
     [[ -e build ]] || mkdir build 
     cd build
