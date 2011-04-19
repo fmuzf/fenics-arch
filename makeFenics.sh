@@ -1,13 +1,12 @@
 #!/bin/bash
-# installs pacakges found in ~/aur
+# installs packges found in ~/aur
 
-PKG=~/aur/packages/fenics
+PKG=~/myaur/dev
 
 CWD=`pwd`
 for p in instant fiat ufc ufl viper ffc dolfin; do
 echo makepkg -sf $p
 cd $PKG/$p
-#pf=`ls $p*.xz`
-makepkg -fs
+makepkg -fs || exit 1
 cd $CWD
 done

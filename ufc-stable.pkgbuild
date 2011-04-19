@@ -6,6 +6,7 @@ pkgdesc="A unified framework for finite element assembly."
 arch=(any)
 url="http://launchpad.net/ufc"
 license=('?')
+groups=('fenics')
 depends=('python2' 'boost' 'swig')
 options=(!emptydirs)
 source=($url/trunk/$pkgver/+download/$pkgname-$pkgver.tar.gz)

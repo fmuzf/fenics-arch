@@ -7,6 +7,7 @@ pkgdesc="A minimalistic scientific plotter and run-time visualization module. Vi
 arch=(any)
 url="http://launchpad.net/fenics-viper"
 license=('GNU LGPL v2.1')
+groups=('fenics')
 depends=('python2' 'vtk') # numpy
 options=(!emptydirs)
 source=($url/trunk/$pkgver/+download/$pkgname-$pkgver.tar.gz)

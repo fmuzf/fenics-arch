@@ -6,6 +6,7 @@ pkgdesc="Unified form language."
 arch=(any)
 url="http://launchpad.net/ufl"
 license=('GPL')
+groups=('fenics')
 depends=('python2')
 options=(!emptydirs)
 source=($url/trunk/$pkgver/+download/$pkgname-$pkgver.tar.gz)

@@ -6,6 +6,7 @@ pkgdesc="Supports generation of arbitrary order instances of the Lagrange elemen
 arch=(any)
 url="http://launchpad.net/fiat"
 license=('GPL')
+groups=('fenics')
 depends=('python2' 'scons' 'python-scientific')
 options=(!emptydirs)
 source=($url/trunk/$pkgver/+download/$pkgname-$pkgver.tar.gz)

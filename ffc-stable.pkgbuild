@@ -6,6 +6,7 @@ pkgdesc="A compiler for finite element variational forms."
 arch=(any)
 url="http://launchpad.net/ffc"
 license=('GPL')
+groups=('fenics')
 depends=('python2' 'fiat' 'ufc' 'ufl' 'python-numpy')
 optdepends=('FErari: optimisation support')
 options=(!emptydirs)
