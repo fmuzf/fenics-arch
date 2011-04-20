@@ -2,7 +2,7 @@
 # Contributor: DarkHeart <fumbles@ymail.com>
 pkgname=instant-fenics
 _pkgname=instant
-pkgver=0.9.8
+pkgver=0.9.9
 pkgrel=1
 pkgdesc="A Python module allowing for instant inlining of C and C++ code in Python"
 arch=('any')
@@ -12,10 +12,10 @@ groups=('fenics')
 _patchname="patch.diff"
 depends=('python2' 'swig')
 conflicts=('instant')
-source=(http://launchpad.net/instant/trunk/0.9.8/+download/$_pkgname-$pkgver.tar.gz
+source=(http://launchpad.net/instant/trunk/0.9.9/+download/$_pkgname-$pkgver.tar.gz
         patch.diff)
-md5sums=('e77edecc222bd2916947f9eca49ca131'
-         '90a3add905f6335a61dde49058fe50d9')
+md5sums=('df0016423c3ff41ec1a9384c8d3bb36e'
+         '8445ffdaabc8645d93310e34cf6a9170')
 
 build() {
   cd $srcdir/$_pkgname-$pkgver
@@ -24,6 +24,10 @@ build() {
       sed -i 's#\(/usr/bin/env \|/usr/bin/\)python[2-3]*#\1python2#' {} \;
 
   python2 setup.py build
+}
+
+package() {
+  cd $srcdir/$_pkgname-$pkgver
   python2 setup.py install --root=$pkgdir
 }
 
