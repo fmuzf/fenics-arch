@@ -1,14 +1,16 @@
 #!/bin/bash
 # installs pacakges found in ~/aur
 
-PKG=~/aur/packages/fenics
+PKG=~/myaur/dev
 
 CWD=`pwd`
-for p in instant fiat ufc ufl viper ffc dolfin; do
+#for p in instant fiat ufc ufl viper ffc dolfin; do
+for p in instant fiat ufc ufl ffc dolfin; do
 echo makepkg -f --source $p
 cd $PKG/$p
 #pf=`ls $p*.xz`
-makepkg --source
+makepkg -f --source
+# e.g. aurup ufc-2.0.1-1.src.tar.gz scienc
 cd $CWD
 done
 # pkg/usr/lib/python3.1/site-packages/ufc/__init__.py
