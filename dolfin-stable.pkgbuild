@@ -8,8 +8,8 @@ url="http://launchpad.net/dolfin"
 license=('GPL')
 groups=('fenics')
 depends=('python2' 'boost' 'libxml2' 'petsc' 'lapack' 'blas')
-makedepends=('cmake' 'swig')
-optdepends=('trilinos' 'armadillo')
+makedepends=('cmake' 'swig' 'python2-sphinx')
+#optdepends=('trilinos-fenics' 'armadillo-fenics')
 options=(!emptydirs)
 source=($url/1.0.x/$pkgver/+download/$pkgname-$pkgver.tar.gz)
 noextract=()
@@ -19,6 +19,9 @@ build() {
     cd "$srcdir/$pkgname-$pkgver"
     find ${srcdir} -name "*" -type f -exec \
 	sed -i 's#\(/usr/bin/env \|/usr/bin/\)python[2-3]*#\1python2#' {} \;
+
+    # sphinx is for making documentation
+    sed -i 's/sphinx-build/sphinx-build2/g' ./cmake/modules/FindSphinx.cmake
 
     [[ -e build ]] || mkdir build 
     cd build
