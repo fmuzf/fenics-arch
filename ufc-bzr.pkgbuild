@@ -1,25 +1,44 @@
 # Maintainer: Myles English <myles at rockhead dot biz>
-pkgname=ufc
-pkgver=2.0.5
+pkgname=ufc-bzr
+pkgver=355
 pkgrel=1
 pkgdesc="A unified framework for finite element assembly."
 arch=('i686' 'x86_64')
 url="http://launchpad.net/ufc"
 license=('?')
-groups=('fenics')
+groups=('fenics-bzr')
 depends=('python2') # 'boost' 'swig')
+makedepends=('bzr' 'python2')
+provides=('ufc')
+conflicts=('ufc')
 options=(!emptydirs)
-source=($url/2.0.x/$pkgver/+download/$pkgname-$pkgver.tar.gz)
-md5sums=('7edcdd12cbd2d4a0525aa017281771c4')
+
+_bzrtrunk=lp:ufc
+_bzrmod=ufc
 
 build() {
-    cd "$srcdir/$pkgname-$pkgver"
-    [[ -e build ]] || mkdir build 
-    cd "$srcdir/$pkgname-$pkgver/build"
+    msg "Connecting to Bazaar server...."
+
+    if [ -d $_bzrmod ]; then
+	cd $_bzrmod && bzr pull $_bzrtrunk -r $pkgver && cd ..
+	msg "The local files are updated."
+    else
+	bzr branch $_bzrtrunk $_bzrmod -r $pkgver
+    fi
+
+    msg "BZR checkout done or server timeout"
+    msg "Starting make..."
+
+    [ -d $_bzrmod-build ] && rm -rf $_bzrmod-build
+    cp -r $_bzrmod $_bzrmod-build
+    cd $_bzrmod-build
 
     # replace python with python2 everywhere
-    find ${srcdir} -name "*" -type f -exec \
+    find ./ -name "*" -type f -exec \
 	sed -i 's#\(/usr/bin/env \|/usr/bin/\)python[2-3]*#\1python2#' {} \;
+
+    [[ -e build ]] || mkdir build 
+    cd build
 
     cmake .. -DCMAKE_INSTALL_PREFIX=/usr \
 	     -DPYTHON_EXECUTABLE:PATH=/usr/bin/python2 \
@@ -29,7 +48,7 @@ build() {
 }
 
 package() {
-    cd $srcdir/$pkgname-$pkgver/build
+    cd $srcdir/$_bzrmod-build/build
     make install DESTDIR=$pkgdir
 }
 

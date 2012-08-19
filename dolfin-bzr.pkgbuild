@@ -1,17 +1,24 @@
 # Maintainer: Myles English <myles at rockhead dot biz>
 pkgname=dolfin-bzr
-pkgver=1
+pkgver=6843
 pkgrel=1
 pkgdesc="the C++/Python interface of FEniCS, providing a consistent PSE (Problem Solving Environment) for ordinary and partial differential equations."
 arch=(any)
 url="https://launchpad.net/dolfin"
 license=('GPL')
-groups=('fenics')
-depends=('python2' 'boost' 'libxml2' 'petsc' 'lapack' 'blas')
+groups=('fenics-bzr')
+depends=('python2' 'boost' 'libxml2' 'petsc' 'lapack' 'blas' 'parmetis' 'metis' 'python2-ply')
 makedepends=('bzr' 'cmake' 'swig')
-optdepends=('python2-sphinx: for building documentation')
+optdepends=('ffc: for the python interface'
+            'python2-sphinx: for building documentation')
 #optdepends=('trilinos-fenics' 'armadillo-fenics')
+conflicts=('dolfin')
+#provides=('dolfin')      # TODO
 options=(!emptydirs)
+install=dolfin.install
+
+# to stop /common/timing.cpp.o coming before /common/defines.cpp.o
+export MAKEFLAGS="-j1"
 
 _bzrtrunk=lp:dolfin
 _bzrmod=dolfin
@@ -32,6 +39,11 @@ build() {
     [ -d $_bzrmod-build ] && rm -rf $_bzrmod-build
     cp -r $_bzrmod $_bzrmod-build
     cd $_bzrmod-build
+    #patch -Np1 -i ${startdir}/patch.diff
+
+    # for PETSc 3.3_p0
+    sed -i 's/MatCreateMPIAIJ/MatCreateAIJ/' dolfin/la/PETScMatrix.cpp
+    sed -i 's/<private\/pcimpl.h>/<petsc-private\/pcimpl.h>/' dolfin/la/PETScUserPreconditioner.cpp
 
     find ./ -name "*" -type f -exec \
 	sed -i 's#\(/usr/bin/env \|/usr/bin/\)python[2-3]*#\1python2#' {} \;
@@ -42,7 +54,7 @@ build() {
     [ -d build ] && rm -rf build
     mkdir build
     cd build
-  
+
     cmake .. -DCMAKE_CXX_COMPILER=/usr/bin/g++ \
 	-DCMAKE_INSTALL_PREFIX=${pkg}/usr \
 	-DPYTHON_EXECUTABLE:PATH=/usr/bin/python2 \
@@ -54,8 +66,6 @@ build() {
 }
 
 package() {
-    cd $srcdir/$_bzrmod_build/build
+    cd "$srcdir/$_bzrmod-build/build"
     make install DESTDIR=$pkgdir
 }
-
-# vim:set ts=2 sw=2 et:
