@@ -1,24 +1,52 @@
-#!/bin/bash
-# installs pacakges found in ~/aur
+#!/usr/bin/env bash
 
-PKG=~/myaur/dev
+# installs packages found in ~/aur
+# sudo pacman -R fenics-bzr
+
+#set -o errexit
+set -e
+
+FENICS_ROOT=~/myaur/dev
 
 CWD=`pwd`
+
+# source repo management functions
+. ~/bin/pacman-lib.sh
+
 #for p in instant fiat ufc ufl viper ffc dolfin; do
-for p in instant fiat ufc ufl ffc dolfin; do
-echo makepkg -f --source $p
-cd $PKG/$p
-#pf=`ls $p*.xz`
-makepkg -f --source
-# e.g. aurup ufc-2.0.1-1.src.tar.gz scienc
-cd $CWD
+#for p in `ls -d *-bzr`; do
+for p in fiat-bzr instant-bzr ufc-bzr ufl-bzr viper-bzr ffc-bzr dolfin-bzr; do
+    echo "Removing package ${p} from local-repo-dev"
+    set +e
+    rmPkgDev ${p}
+    EX1=$?
+    if [[ ${EX1} -eq 1 ]]; then
+	echo "May be ${p} was not in local-repo-dev"
+    elif [[ ${EX1} -ne 0 ]]; then
+	echo "some other error occurred"
+	exit 1
+    fi
+    set -e
+    #echo makepkg -f --source $p
+    cd $FENICS_ROOT/$p
+    #pf=`ls $p*.xz`
+    #makepkg --source
+    echo nice -n 18 makepkg -sfL
+    nice -n 18 makepkg -sfL
+    # most recent package
+    PKG=`ls -clt ${FENICS_ROOT}/${p}/*.pkg.tar.xz | head -1 | gawk '{print $NF}'`
+    addPkgDev ${PKG}
+    #sudo pacman -R --noconfirm ${p}
+    set +e
+    sudo pacman -S --noconfirm local-repo-dev/${p}
+    EX1=$?
+    if [[ ${EX1} -eq 1 ]]; then
+        # corrupt package error
+	sudo pacman -S --noconfirm local-repo-dev/${p}
+    elif [[ ${EX1} -ne 0 ]]; then
+	echo "some other error occurred"
+	exit 1
+    fi
+    set -e
+    cd $CWD
 done
-# pkg/usr/lib/python3.1/site-packages/ufc/__init__.py
-# pkg/usr/lib/python3.1/site-packages/ufc/ufc.py
-# pkg/usr/lib/python3.1/site-packages/ufc_utils/finite_element.py
-# pkg/usr/lib/python3.1/site-packages/ufc_utils/integrals.py
-# pkg/usr/lib/python3.1/site-packages/ufc_utils/build.py
-# pkg/usr/lib/python3.1/site-packages/ufc_utils/__init__.py
-# pkg/usr/lib/python3.1/site-packages/ufc_utils/dof_map.py
-# pkg/usr/lib/python3.1/site-packages/ufc_utils/form.py
-# pkg/usr/lib/python3.1/site-packages/ufc_utils/function.py
