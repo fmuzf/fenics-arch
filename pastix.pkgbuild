@@ -1,0 +1,73 @@
+# Maintainer: Myles English <myles at rockhead dot biz>
+# Try: git clone git@github.com:mylese/pastix-arch.git
+pkgname=pastix
+pkgver=3725
+pkgrel=1
+pkgdesc="A scientific library that provides a high performance parallel solver for very large sparse linear systems based on direct methods."
+arch=('any')
+url="http://pastix.gforge.inria.fr/"
+license=('CeCILL-C')
+depends=('python2' 'openmpi' 'boost' 'blas' 'umfpack' 'metis' 'parmetis')
+#makedepends=('gcc-fortran')
+#install=petsc.install
+source=(https://gforge.inria.fr/frs/download.php/30920/${pkgname}_release_${pkgver}.tar.bz2)
+md5sums=('f9419a75360ea9b559c49117597f0e84')
+
+_build_dir=${srcdir}/${pkgname}_release_${pkgver}/src
+#_install_dir=/usr/petsc/${_config}
+
+#export MAKEFLAGS="-j1"  # for 3.2, workaround bug triggered by scotch
+
+build() {
+    cd ${_build_dir}
+    #patch -Np1 -i ${startdir}/patch_debug.diff
+    #cp config/LINUX-GNU.in config.in
+    cp ${startdir}/config.in config.in
+#find ${srcdir} -name "*" -type f -exec \
+#	sed -i 's#\(/usr/bin/env \|/usr/bin/\)python[2-3]*#\1python2#' {} \;
+#
+ #   python2 ./configure \
+#	--prefix=${pkgdir}${_install_dir}
+
+    make
+}
+
+ # package() {
+#     cd ${_build_dir}
+
+#     make ${MAKEFLAGS} PETSC_DIR=${_build_dir} PETSC_ARCH=${_config} install > /dev/null
+
+#     sed -i 's#'"${pkgdir}"'##g' "${pkgdir}${_install_dir}/conf/variables"
+#     sed -i 's#'"${pkgdir}"'##g' "${pkgdir}${_install_dir}/conf/petscvariables"
+#     sed -i 's#'"${pkgdir}"'##g' "${pkgdir}${_install_dir}/conf/rules"
+#     sed -i 's#'"${pkgdir}"'##g' "${pkgdir}${_install_dir}/include/petscconf.h"
+#     sed -i 's#'"${pkgdir}"'##g' "${pkgdir}${_install_dir}/include/petscconfiginfo.h"
+#     sed -i 's#'"${pkgdir}"'##g' "${pkgdir}${_install_dir}/conf/petscrules"
+
+#     export PETSC_DIR=${_install_dir}
+    
+#     # Note: the hyperlinks between documentation, tutorials and examples are
+#     # not perfect yet
+
+#     # documentation
+#     mkdir -p ${pkgdir}/usr/share/doc/$pkgname/
+#     cp -r ${_build_dir}/docs ${pkgdir}/usr/share/doc/$pkgname/
+
+#     # tutorials
+#     cp -r ${_build_dir}/tutorials ${pkgdir}/usr/share/doc/$pkgname/
+
+#     # src for tutorials
+#     cp -r ${_build_dir}/src ${pkgdir}/usr/share/doc/$pkgname/tutorials/
+
+#     # install licenCe (even though there is no such word as licenSes)
+#     mkdir -p ${pkgdir}/usr/share/licenses/petsc
+#     cp ${_build_dir}/docs/copyright.html ${pkgdir}/usr/share/licenses/$pkgname/
+
+#     mkdir -p ${pkgdir}/etc/profile.d
+#     echo "export PETSC_DIR=${_install_dir}" > ${pkgdir}/etc/profile.d/petsc.sh
+#     chmod +x ${pkgdir}/etc/profile.d/petsc.sh
+
+#     # show where the shared libraries are
+#     install -d -m755 "${pkgdir}"/etc/ld.so.conf.d/
+#     echo "${_install_dir}/lib" > "${pkgdir}"/etc/ld.so.conf.d/petsc.conf
+# }

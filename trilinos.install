@@ -1,0 +1,5 @@
+post_install() {
+  echo "Add 'export TRILINOS_DIR=/usr to .bashrc (or equivalent)'"
+}
+
+# vim:set ts=2 sw=2 et:

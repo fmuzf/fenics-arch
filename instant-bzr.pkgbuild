@@ -1,10 +1,11 @@
+# Maintainer: Myles English <myles at rockhead dot biz>
 pkgname=instant-bzr
 pkgver=333
 pkgrel=1
 pkgdesc="A Python module allowing for instant inlining of C and C++ code in Python"
 arch=('any')
 url="http://launchpad.net/instant"
-license=('BSD')
+license=('LGPL')
 groups=('fenics-bzr')
 depends=('python2' 'swig')
 conflicts=('instant')
