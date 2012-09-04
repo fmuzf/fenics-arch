@@ -13,3 +13,17 @@
 #+LINK_UP:   
 #+LINK_HOME: 
 #+XSLT:
+
+There are also some scripts that I use to help with installing on Arch Linux:
+
+- makeAllFenicsAURPkgs.sh  (current)
+- makeFenics.sh            (old)
+- installFenicsPkgs.sh     (old)
+
+I use pacaur as an AUR helper.
+
+# Current AUR packages represented by these PKBUILDS are:
+
+# BEGIN_SRC sh
+
+# END_SRC
