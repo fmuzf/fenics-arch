@@ -37,8 +37,6 @@ build() {
       -DCMAKE_C_FLAGS:STRING="-lpython2.7" \
       -DCMAKE_CXX_FLAGS:String="-lpython2.7" \
       -DCMAKE_Fortran_FLAGS:String="-lpython2.7" \
-      -DTPL_ENABLE_Scotch:BOOL=ON \
-      -DTPL_Scotch_INCLUDE_DIRS=/usr/include/scotch \
       $EXTRA_ARGS
 
   make
