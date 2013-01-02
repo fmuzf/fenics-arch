@@ -40,10 +40,16 @@ build() {
     [[ -e build ]] || mkdir build 
     cd build
 
+    # get the real path to the python executable, allows for virtualenv setups
+    local py2_interp=`python2 -c "import os,sys; print(os.path.realpath(sys.executable))"`
+    local py2_inc="${py2_interp/\/bin\///include/}"
+    local py2_lib=`ldd ${py2_interp} | grep python | cut -d " " -f 3 | sed 's/\(.*.so\).*/\1/'`
+
+    #TODO: should this be? cmake .. -DCMAKE_INSTALL_PREFIX=${pkg}/usr \
     cmake .. -DCMAKE_INSTALL_PREFIX=/usr \
-	     -DPYTHON_EXECUTABLE:PATH=/usr/bin/python2 \
-	     -DPYTHON_INCLUDE_DIR:PATH=/usr/include/python2.7 \
-             -DPYTHON_LIBRARY:FILEPATH=/usr/lib/libpython2.7.so
+	     -DPYTHON_EXECUTABLE:PATH=${py2_interp} \
+	     -DPYTHON_INCLUDE_DIR:PATH=${py2_inc} \
+             -DPYTHON_LIBRARY:FILEPATH=${py2_lib}
     make
 }
 
