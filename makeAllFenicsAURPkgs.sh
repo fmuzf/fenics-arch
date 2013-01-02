@@ -13,12 +13,20 @@ CWD=`pwd`
 # source repo management functions
 . ~/bin/pacman-lib.sh
 
-#for p in instant fiat ufc ufl viper ffc dolfin; do
-#for p in `ls -d *-bzr`; do
-for p in fiat-bzr instant-bzr ufc-bzr ufl-bzr viper-bzr ffc-bzr dolfin-bzr; do
+function removeUpdateInstall {
+    # arg1: package name
+    # arg2: path to directory containing PKGBUILD
+    p=$1
+    SRC_PATH=${2}
     echo "Removing package ${p} from local-repo-dev"
     set +e
-    rmPkgDev ${p}
+
+    if ! `rmPkgDev ${p}`; then
+	echo "Package ${p} already removed"
+    else
+	echo "Removed package ${p}"
+    fi 2>/dev/null
+
     EX1=$?
     if [[ ${EX1} -eq 1 ]]; then
 	echo "May be ${p} was not in local-repo-dev"
@@ -28,7 +36,7 @@ for p in fiat-bzr instant-bzr ufc-bzr ufl-bzr viper-bzr ffc-bzr dolfin-bzr; do
     fi
     set -e
     #echo makepkg -f --source $p
-    cd $FENICS_ROOT/$p
+    cd ${SRC_PATH}
     #pf=`ls $p*.xz`
     #makepkg --source
     echo nice -n 18 makepkg -sfL
@@ -49,4 +57,10 @@ for p in fiat-bzr instant-bzr ufc-bzr ufl-bzr viper-bzr ffc-bzr dolfin-bzr; do
     fi
     set -e
     cd $CWD
+}
+
+#for p in instant fiat ufc ufl viper ffc dolfin; do
+#for p in `ls -d *-bzr`; do
+for p in fiat-bzr instant-bzr ufc-bzr ufl-bzr viper-bzr ffc-bzr dolfin-bzr; do
+  removeUpdateInstall ${p} ${FENICS_ROOT}/${p}
 done
