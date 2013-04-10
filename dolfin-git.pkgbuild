@@ -1,52 +1,49 @@
 # Maintainer: Myles English <myles at rockhead dot biz>
-pkgname=dolfin-bzr
-pkgver=7248
+pkgname=dolfin-git
+pkgver=1
 pkgrel=1
 pkgdesc="the C++/Python interface of FEniCS, providing a consistent PSE (Problem Solving Environment) for ordinary and partial differential equations."
 arch=(any)
 url="https://launchpad.net/dolfin"
 license=('LGPL')
-groups=('fenics-bzr')
-# the package will still build without these dependencies but it wouldn't be
+groups=('fenics-git')
+# the package may still build without these dependencies but it wouldn't be
 # very useful, most people would want these installed before building
-depends=('python2' 'boost' 'openmpi' 'libxml2' 'lapack' 'blas' 'parmetis' 'metis' 'ptscotch' 'hdf5' 'cgal' 'vtk' 'petsc' 'trilinos' 'python2-ply')
+depends=('python2' 'boost' 'libxml2' 'hdf5' 'cgal' 'vtk' 'petsc' 'trilinos' 'python2-ply')
 #depends=('python2' 'boost' 'libxml2')
-makedepends=('bzr' 'cmake' 'swig')
+makedepends=('git' 'cmake' 'swig')
 optdepends=('ffc: for the python interface'
             'python2-sphinx: for building documentation')
 conflicts=('dolfin')
-#provides=('dolfin')      # TODO
 options=(!emptydirs)
 install=dolfin.install
 
 # to stop /common/timing.cpp.o coming before /common/defines.cpp.o
 export MAKEFLAGS="-j1"
 
-_bzrtrunk=lp:dolfin
-_bzrmod=dolfin
+_gitroot="https://bitbucket.org/fenics-project/dolfin.git"
+_gitname=dolfin
 
 build() {
-    # export CFLAGS="$CFLAGS -Wall -Wshadow -Wextra -Werror"
-    # export CXXFLAGS="$CXXFLAGS -Wall -Wshadow -Wextra -Werror"
+  # export CFLAGS="$CFLAGS -Wall -Wshadow -Wextra -Werror"
+  # export CXXFLAGS="$CXXFLAGS -Wall -Wshadow -Wextra -Werror"
 
-    msg "Connecting to Bazaar server...."
+  cd "$srcdir"
+  msg "Connecting to GIT server...."
 
-    if [ -d $_bzrmod ]; then
-	cd $_bzrmod && bzr pull $_bzrtrunk -r $pkgver && cd ..
-	msg "The local files are updated."
-    else
-	bzr branch $_bzrtrunk $_bzrmod -r $pkgver
-    fi
+  if [ -d $_gitname ] ; then
+    cd $_gitname && git pull origin
+    msg "The local files are updated."
+  else
+    git clone $_gitroot $_gitname
+  fi
 
-    msg "BZR checkout done or server timeout"
-    msg "Starting make..."
+  msg "GIT checkout done or server timeout"
+  msg "Starting make..."
 
-    # if using HDF5 version 1.8.10, we need a different FindHDF5.cmake file
-    # [ -e /usr/share/cmake/hdf5/FindHDF5.cmake ] && cp /usr/share/cmake/hdf5/FindHDF5.cmake "${_bzrmod}/cmake/modules/"
-
-    [ -d $_bzrmod-build ] && rm -rf $_bzrmod-build && msg "Deleted old $_bzrmod-build"
-    cp -r $_bzrmod $_bzrmod-build
-    cd $_bzrmod-build
+  rm -rf "$srcdir/$_gitname-build"
+  git clone "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+  cd "$srcdir/$_gitname-build"
     #patch -Np1 -i "${srcdir}/debug_cxxflags.diff"
 
     find ./ -name "*" -type f -exec \
@@ -82,6 +79,6 @@ build() {
 }
 
 package() {
-    cd "$srcdir/$_bzrmod-build/build"
+    cd "$srcdir/$_gitmod-build/build"
     make install DESTDIR=$pkgdir
 }

@@ -1,37 +1,38 @@
 # Maintainer: Myles English <myles at rockhead dot biz>
-pkgname=ufc-bzr
-pkgver=355
+pkgname=ufc-git
+pkgver=1
 pkgrel=1
 pkgdesc="A unified framework for finite element assembly."
 arch=('any')
 url="http://launchpad.net/ufc"
 license=('LGPL')
-groups=('fenics-bzr')
+groups=('fenics-git')
 depends=('python2') # 'boost' 'swig')
-makedepends=('bzr' 'python2')
+makedepends=('git' 'python2')
 provides=('ufc')
 conflicts=('ufc')
 options=(!emptydirs)
 
-_bzrtrunk=lp:ufc
-_bzrmod=ufc
+_gitroot="https://bitbucket.org/fenics-project/ufc.git"
+_gitname=ufc
 
 build() {
-    msg "Connecting to Bazaar server...."
+  cd "$srcdir"
+  msg "Connecting to GIT server...."
 
-    if [ -d $_bzrmod ]; then
-	cd $_bzrmod && bzr pull $_bzrtrunk -r $pkgver && cd ..
-	msg "The local files are updated."
-    else
-	bzr branch $_bzrtrunk $_bzrmod -r $pkgver
-    fi
+  if [ -d $_gitname ] ; then
+    cd $_gitname && git pull origin
+    msg "The local files are updated."
+  else
+    git clone $_gitroot $_gitname
+  fi
 
-    msg "BZR checkout done or server timeout"
-    msg "Starting make..."
+  msg "GIT checkout done or server timeout"
+  msg "Starting make..."
 
-    [ -d $_bzrmod-build ] && rm -rf $_bzrmod-build
-    cp -r $_bzrmod $_bzrmod-build
-    cd $_bzrmod-build
+  rm -rf "$srcdir/$_gitname-build"
+  git clone "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+  cd "$srcdir/$_gitname-build"
 
     # replace python with python2 everywhere
     find ./ -name "*" -type f -exec \
@@ -54,7 +55,7 @@ build() {
 }
 
 package() {
-    cd $srcdir/$_bzrmod-build/build
+    cd $srcdir/$_gitname-build/build
     make install DESTDIR=$pkgdir
 }
 
