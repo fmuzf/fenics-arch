@@ -3,7 +3,7 @@
 # Try: git clone git@github.com:mylese/petsc-arch.git
 pkgname=petsc
 pkgver=3.3_p6
-pkgrel=2
+pkgrel=4
 _config=arch-linux2-cxx-opt
 # if --with-debugging=yes is set then PETSC_ARCH is automatically set to
 #"arch-linux2-cxx-debug" for some things, so the _config should be changed too
@@ -12,13 +12,12 @@ pkgdesc="Portable, extensible toolkit for scientific computation"
 arch=('any')
 url="http://www.mcs.anl.gov/petsc/petsc-as"
 license=('MIT compatible')
-depends=('python2' 'openmpi' 'boost' 'blas' 'lapack' 'scalapack' 'blacs' 'scotch_esmumps')
+depends=('python2' 'openmpi' 'boost' 'blas' 'lapack' 'scalapack' 'scotch_esmumps')
 makedepends=('gcc' 'gcc-fortran')
 install=petsc.install
 source=(http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/${pkgname}-${pkgver/_/-}.tar.gz)
 md5sums=('7eed2e1d67be6039fd56686e779d6601')
 
-_build_dir=${srcdir}/${pkgname}-${pkgver/_/-}
 _install_dir=/opt/petsc/${_config}
 
 # to avoid: "make[2]: *** No rule to make target `libptesmumps.a', needed by `main_esmumps'.  Stop."
@@ -32,6 +31,8 @@ export MAKEFLAGS="-j1"
 # aur/scotch_esmumps 6.0.0-1
 
 build() {
+    _build_dir=${srcdir}/${pkgname}-${pkgver/_/-}
+
     cd ${_build_dir}
     #patch -Np1 -i ${startdir}/patch_debug.diff
 
@@ -84,12 +85,14 @@ build() {
 
     python2 ./configure \
 	--prefix=${pkgdir}${_install_dir} \
+        --PETSC_ARCH=${_config} \
 	${CONFOPTS}
 
     make ${MAKEFLAGS} PETSC_DIR=${_build_dir} PETSC_ARCH=${_config} all
 }
 
 package() {
+    _build_dir=${srcdir}/${pkgname}-${pkgver/_/-}
     cd ${_build_dir}
     echo "make ${MAKEFLAGS} PETSC_DIR=${_build_dir} PETSC_ARCH=${_config} install"
     export PETSC_DIR=${_build_dir}
