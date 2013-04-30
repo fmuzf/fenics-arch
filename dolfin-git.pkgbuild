@@ -1,7 +1,7 @@
 # Maintainer: Myles English <myles at rockhead dot biz>
 pkgname=dolfin-git
 pkgver=1
-pkgrel=1
+pkgrel=2
 pkgdesc="the C++/Python interface of FEniCS, providing a consistent PSE (Problem Solving Environment) for ordinary and partial differential equations."
 arch=(any)
 url="https://launchpad.net/dolfin"
@@ -49,6 +49,11 @@ build() {
     find ./ -name "*" -type f -exec \
 	sed -i 's#\(/usr/bin/env \|/usr/bin/\)python[2-3]*#\1python2#' {} \;
 
+    #find -iname '*.py' -execdir sed -i 's|^#!.*python$|#!/usr/bin/python2|' '{}' \;
+
+    sed -i 's/read/# read/' cmake/scripts/generate-all
+    ./cmake/scripts/generate-all
+
     # sphinx is for making documentation
     sed -i 's/\(sphinx-build[013456789^2]*\)\(.*\)/sphinx-build2\2/g' \
 	./cmake/modules/FindSphinx.cmake
@@ -79,6 +84,6 @@ build() {
 }
 
 package() {
-    cd "$srcdir/$_gitmod-build/build"
+    cd "$srcdir/$_gitname-build/build"
     make install DESTDIR=$pkgdir
 }
